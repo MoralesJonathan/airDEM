@@ -62,3 +62,6 @@ typings/
 
 # VS code
 .vscode
+
+# lock-file
+package-lock.json
