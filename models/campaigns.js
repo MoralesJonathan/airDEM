@@ -15,12 +15,13 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             mongodbConnection.connect(error => {
                 if (!error) {
                     const collection = mongodbConnection.db().collection("campaigns");
-                    collection.insertOne(data, function(err, result) {
+                    let {selected, ...obj} = data;
+                    collection.insertOne(obj, function(err, result) {
                         if(!err) {
                             const date = new Date(Date.now() + 10000),
-                                campaign = data.campaignName,
+                                {name} = obj,
                                 scheduledEmail = schedule.scheduleJob(date, () => {
-                                    emailer.sendCampaign(campaign);
+                                    emailer.sendCampaign(name);
                                 });
                             cb(200,{result,scheduledEmail})
                         } else {
@@ -35,8 +36,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         getCampaign: (name,cb) => {
             mongodbConnection.connect(error => {
                 if (!error) {
+                    console.log(name);
                     const collection = mongodbConnection.db().collection("campaigns");
-                    collection.findOne({campaignName:name},(err, result) => {
+                    collection.findOne({"name":name},(err, result) => {
                         !err?cb(200,result): cb(500,err);
                     });
                 } else {
@@ -49,7 +51,13 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 if (!error) {
                     const collection = mongodbConnection.db().collection("campaigns");
                     collection.find({}).toArray((err, result) => {
-                        !err?cb(200,result): cb(500,err);
+                        if(!err){
+                            result = result.map(a => a.name);
+                            cb(200,result)
+                         }
+                         else {
+                            cb(500,err);
+                         }
                     });
                 } else {
                     cb(500,error);
