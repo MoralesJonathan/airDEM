@@ -96,7 +96,7 @@ router.get("/tracking/:iata", (req, res) => {
 });
 
 router.get("/tracking/:campaign/:type", (req, res) => {
-    tracking.logTracking({"type":req.params.type,"campaign":req.params.campaign},(status, message = "ok") => res.status(status).send(message));
+    tracking.logTracking({"type":req.params.type,"campaign":req.params.campaign},(status, message = "ok") => res.redirect('https://www.spirit.com/en/flights'));
 });
 
 router.get("/template/:name", (req, res) => {
