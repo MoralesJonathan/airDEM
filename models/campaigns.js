@@ -10,15 +10,23 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         },
         createCampaign: (data, cb) => {
             const collection = mongodbConnection.db().collection("campaigns");
+            const trackingCollection = mongodbConnection.db().collection("tracking");
             let { selected, ...obj } = data;
-            collection.insertOne(obj, function (err, result) {
+            trackingCollection.insertOne({"campaign": obj.name, "iataCode": obj.iataCode, "events": [{"date": new Date(obj.date).toLocaleDateString(),"clicks":0,"views":0}]}, function (err, result) {
                 if (!err) {
-                    const date = new Date(Date.now() + 10000),
-                        { name, iataCode} = obj,
-                        scheduledEmail = schedule.scheduleJob(date, () => {
-                            emailer.sendCampaign(name, iataCode, mongodbConnection.db());
-                        });
-                    cb(200, { result, scheduledEmail })
+                    collection.insertOne(obj, function (err, result) {
+                        if (!err) {
+                            const date = new Date(Date.now() + 10000),
+                                { name, iataCode} = obj,
+                                scheduledEmail = schedule.scheduleJob(date, () => {
+                                    emailer.sendCampaign(name, iataCode, mongodbConnection.db());
+                                });
+                            cb(200, { result, scheduledEmail })
+                        } else {
+                            console.log(err);
+                            cb(500, err);
+                        }
+                    });
                 } else {
                     console.log(err);
                     cb(500, err);
