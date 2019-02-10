@@ -9,8 +9,8 @@ function Tracking() {
 
     useEffect(() => {
         API.getStats().then((res) => {
-            console.log(res);
-            setStats(res);
+            console.log(res.data);
+            setStats(res.data);
         })
             .catch((error) => {
                 console.log(error);
@@ -21,7 +21,7 @@ function Tracking() {
     return (
         <React.Fragment>
             <Container style={{paddingTop: '20px'}}>
-                {stats === "" ? null: <BarChart data={stats} height={400} width={800}></BarChart>}
+                {stats === "" ? null: stats.map((data, index) => <div style={{paddingBottom:"65px"}}><h2 style={{paddingBottom:"15px"}}>{data.datasets[0].label}</h2><BarChart key={index} data={data} height={400} width={800}></BarChart></div>)}
             </Container>
         </React.Fragment>
     )

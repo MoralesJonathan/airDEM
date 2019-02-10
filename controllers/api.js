@@ -1,10 +1,10 @@
 const express = require("express"),
     router = express.Router();
 
-const imageGeneration = require("../services/imageGenerationService");
-
 const campaigns = require("../models/campaigns.js"),
     customers = require("../models/customers.js"),
+    tracking = require("../models/tracking.js"),
+    imageGeneration = require("../services/imageGenerationService"),
     airlines = require("../models/airlines.js");
     
 router.get("/campaign/:id", (req, res) => {
@@ -89,6 +89,14 @@ router.get("/generateCard/:index/:airline/:campaignId", (req, res) => {
           res.end(image); 
     })
 })
+
+router.get("/tracking/:iata", (req, res) => {
+    tracking.getTracking(req.params.iata, (status, message = "ok") => res.status(status).send(message));
+});
+
+router.put("/tracking", (req, res) => {
+    airlines.test((status, message = "ok") => res.status(status).send(message));
+});
 
 module.exports = router;
 
