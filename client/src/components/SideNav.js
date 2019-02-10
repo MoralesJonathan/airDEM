@@ -1,7 +1,6 @@
 import React from 'react';
 import './SideNav.css'
-import { NavItem } from 'react-bootstrap';
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 function SideNav() {
     return (

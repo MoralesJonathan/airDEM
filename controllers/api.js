@@ -1,6 +1,8 @@
 const express = require("express"),
     router = express.Router();
 
+const imageGeneration = require("../services/imageGenerationService");
+
 const campaigns = require("../models/campaigns.js"),
     customers = require("../models/customers.js"),
     airlines = require("../models/airlines.js");
@@ -76,6 +78,15 @@ router.delete("/airline/:id", (req, res) => {
 router.get("/airlinesTest", (req, res) => {
     airlines.test((status, message = "ok") => res.status(status).send(message));
 });
+
+router.get("/generateCard/:index/:airline/:campaignId", (req, res) => {
+    let {index, airline, campaignId} = req.params;
+    imageGeneration.getFlightInfo(index, airline, campaignId).then((imgRes) =>{
+        res.status(200).send(imgRes.data);
+    }).catch((err) => {
+        res.status(400).send(err.response);
+    })
+})
 
 module.exports = router;
 
