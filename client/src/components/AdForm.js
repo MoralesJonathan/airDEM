@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API from "../utils/API";
-import { Container, Form, Row, Col, Alert, Button } from "react-bootstrap";
+import { Form, Alert, Button, Container } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -15,7 +15,7 @@ function AdForm() {
 
     useEffect(() => {
         API.getCampaigns().then((res) => {
-            if(res.data.length > 0){
+            if (res.data.length > 0) {
                 setCampaigns(campaigns.concat(res.data));
             }
         })
@@ -25,7 +25,7 @@ function AdForm() {
             })
     }, []);
 
-    function handleSubmit(event){
+    function handleSubmit(event) {
         event.preventDefault();
         let editedCampaign = {
             "name": name,
@@ -33,31 +33,31 @@ function AdForm() {
             "markup": markup,
             "selected": selected
         }
-        if(id){
+        if (id) {
             editedCampaign._id = id;
             API.updateCampaign(editedCampaign);
         }
-        else{
+        else {
             API.saveCampaign(editedCampaign);
         }
     }
 
-    function handleDateChange(date){
+    function handleDateChange(date) {
         setDate(date.toDateString());
     }
 
-    function handleNameChange(event){
+    function handleNameChange(event) {
         console.log("Changing name", event.currentTarget.value)
         setName(event.currentTarget.value);
     }
 
-    function handleMarkUpChange(event){
+    function handleMarkUpChange(event) {
         setMarkUp(event.currentTarget.value);
     }
 
-    function handleSelect(event){
-        if(event.currentTarget.value !== "Create New Campaign"){
-            API.getCampaign(event.currentTarget.value).then((res)=>{
+    function handleSelect(event) {
+        if (event.currentTarget.value !== "Create New Campaign") {
+            API.getCampaign(event.currentTarget.value).then((res) => {
                 setSelected(res.data.name);
                 setName(res.data.name);
                 setDate(res.data.date);
@@ -65,44 +65,42 @@ function AdForm() {
                 setId(res.data._id);
             })
         }
-        else{
+        else {
             setSelected("Create New Campaign");
-                setName("");
-                setDate(new Date().toDateString());
-                setMarkUp("");
+            setName("");
+            setDate(new Date().toDateString());
+            setMarkUp("");
         }
     }
 
     return (
-        <Container>
-            <Row>
-                <Col>
-                    {error ? <Alert dismissible variant="danger">There was an error loading your Campaigns</Alert> : null}
-                    <Form onSubmit={e => handleSubmit(e)}>
-                        <Form.Group controlId="CampaignForm.CampaignSelect">
-                            <Form.Label>Select Campaign</Form.Label>
-                            <Form.Control as="select" onChange={handleSelect}>
-                                {campaigns.map((campaign) => (
-                                    <option key={campaign}>{campaign}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="CampaignForm.CampaignName">
-                            <Form.Label>Campaign Name</Form.Label>
-                            <Form.Control type="name" placeholder="Campaign Name" value={name} onChange={handleNameChange}/>
-                        </Form.Group>
-                        <Form.Group>
+        <React.Fragment>
+            <Container style={{paddingTop: '20px'}}>
+                {error ? <Alert dismissible variant="danger">There was an error loading your Campaigns</Alert> : null}
+                <Form onSubmit={e => handleSubmit(e)}>
+                    <Form.Group controlId="CampaignForm.CampaignSelect">
+                        <Form.Label>Select Campaign</Form.Label>
+                        <Form.Control as="select" onChange={handleSelect}>
+                            {campaigns.map((campaign) => (
+                                <option key={campaign}>{campaign}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="CampaignForm.CampaignName">
+                        <Form.Label>Campaign Name</Form.Label>
+                        <Form.Control type="name" placeholder="Campaign Name" value={name} onChange={handleNameChange} />
+                    </Form.Group>
+                    <Form.Group>
                         <DatePicker id="CampaignForm.CampaignDatePicker" value={date} onChange={handleDateChange} />
-                        </Form.Group>
-                        <Form.Group controlId="CampaignForm.CampaignMarkup">
-                            <Form.Label>Email Markup</Form.Label>
-                            <Form.Control as="textarea" rows="3" value={markup} onChange={handleMarkUpChange}/>
-                        </Form.Group>
-                        <Button type="submit">Submit form</Button>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
+                    </Form.Group>
+                    <Form.Group controlId="CampaignForm.CampaignMarkup">
+                        <Form.Label>Email Markup</Form.Label>
+                        <Form.Control as="textarea" rows="3" value={markup} onChange={handleMarkUpChange} />
+                    </Form.Group>
+                    <Button type="submit">Submit form</Button>
+                </Form>
+            </Container>
+        </React.Fragment>
     )
 }
 
