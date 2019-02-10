@@ -28,7 +28,8 @@ function EmailListForm() {
         let editedCustomer = {
             "firstName": firstName,
             "lastName": lastName,
-            "airlineName": localStorage.getItem("airlineName"),
+            "name": firstName+" "+lastName,
+            "iata": localStorage.getItem("iata"),
             "email": email,
             "selected": selected
         }
