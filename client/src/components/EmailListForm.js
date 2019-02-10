@@ -6,7 +6,8 @@ function EmailListForm() {
     const [customers, setCustomers] = useState(["Create New Customer"]);
     const [error, setError] = useState(false);
     const [selected, setSelected] = useState(customers[0]);
-    const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [id, setId] = useState();
 
@@ -25,7 +26,9 @@ function EmailListForm() {
     function handleSubmit(event) {
         event.preventDefault();
         let editedCustomer = {
-            "name": name,
+            "firstName": firstName,
+            "lastName": lastName,
+            "airlineName": localStorage.getItem("airlineName"),
             "email": email,
             "selected": selected
         }
@@ -38,8 +41,11 @@ function EmailListForm() {
         }
     }
 
-    function handleNameChange(event) {
-        setName(event.currentTarget.value);
+    function handleFirstNameChange(event) {
+        setFirstName(event.currentTarget.value);
+    }
+    function handleLastNameChange(event) {
+        setLastName(event.currentTarget.value);
     }
 
     function handleEmailChange(event) {
@@ -50,14 +56,16 @@ function EmailListForm() {
         if (event.currentTarget.value !== "Create New Campaign") {
             API.getCustomer(event.currentTarget.value).then((res) => {
                 setSelected(res.data.name);
-                setName(res.data.name);
+                setFirstName(res.data.firstName);
+                setLastName(res.data.lastName);
                 setEmail(res.data.email);
                 setId(res.data._id);
             })
         }
         else {
             setSelected("Create New Customer");
-            setName("");
+            setFirstName("");
+            setLastName("")
             setEmail("");
         }
     }
@@ -75,9 +83,13 @@ function EmailListForm() {
                             ))}
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="EmailForm.CustomerName">
-                        <Form.Label>Customer Name</Form.Label>
-                        <Form.Control type="name" placeholder="John Doe" value={name} onChange={handleNameChange} />
+                    <Form.Group controlId="EmailForm.CustomerFirstName">
+                        <Form.Label>Customer First Name</Form.Label>
+                        <Form.Control type="name" placeholder="John" value={firstName} onChange={handleFirstNameChange} />
+                    </Form.Group>
+                    <Form.Group controlId="EmailForm.CustomerLastName">
+                        <Form.Label>Customer Last Name</Form.Label>
+                        <Form.Control type="name" placeholder="Doe" value={lastName} onChange={handleLastNameChange} />
                     </Form.Group>
                     <Form.Group controlId="EmailForm.CustomerEmail">
                         <Form.Label>Customer Email</Form.Label>
