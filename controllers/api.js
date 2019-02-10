@@ -5,6 +5,7 @@ const campaigns = require("../models/campaigns.js"),
     customers = require("../models/customers.js"),
     tracking = require("../models/tracking.js"),
     imageGeneration = require("../services/imageGenerationService"),
+    template = require("../models/templates.js")
     airlines = require("../models/airlines.js");
     
 router.get("/campaign/:id", (req, res) => {
@@ -96,6 +97,10 @@ router.get("/tracking/:iata", (req, res) => {
 
 router.get("/tracking/:campaign/:type", (req, res) => {
     tracking.logTracking({"type":req.params.type,"campaign":req.params.campaign},(status, message = "ok") => res.status(status).send(message));
+});
+
+router.get("/template/:name", (req, res) => {
+    template.getTemplate({"templateName":req.params.name,},(status, message = "ok") => res.status(status).send(message));
 });
 
 module.exports = router;

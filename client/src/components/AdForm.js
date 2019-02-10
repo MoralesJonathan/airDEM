@@ -62,7 +62,7 @@ function AdForm() {
 
     function handleSelect(event) {
         if (event.currentTarget.value !== "Create New Campaign") {
-            API.getCampaign(event.currentTarget.value).then((res) => {
+            API.getCampaign(event.currentTarget.value).then(res => {
                 setSelected(res.data.name);
                 setName(res.data.name);
                 setDate(res.data.date);
@@ -76,6 +76,13 @@ function AdForm() {
             setDate(new Date().toDateString());
             setMarkUp("");
         }
+    }
+
+    function handleTemplateSelect(event) {
+        API.getTemplate(event.currentTarget.value).then(res => {
+            setMarkUp(res.data.content);  
+        });
+        
     }
 
     return (
@@ -101,6 +108,16 @@ function AdForm() {
                     <Form.Group controlId="CampaignForm.CampaignSubject">
                         <Form.Label>Email Subject</Form.Label>
                         <Form.Control type="text" value={subject} onChange={handleSubjectChange} />
+                    </Form.Group>
+                    <Form.Group controlId="CampaignForm.CampaignSelect">
+                        <Form.Label>Select Email Template</Form.Label>
+                        <Form.Control as="select" onChange={handleTemplateSelect}>
+                            <option key={0}>None</option>
+                            <option key={1}>Default</option>
+                            <option key={2}>Custom 1</option>
+                            <option key={3}>Custom 2</option>
+                            <option key={4}>Custom 3</option>
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="CampaignForm.CampaignMarkup">
                         <Form.Label>Email Markup</Form.Label>

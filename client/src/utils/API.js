@@ -54,5 +54,8 @@ export default {
     getStats: function(){
         const airline = localStorage.getItem("iata");
         return axios.get(`/api/tracking/${airline}`)
+    },
+    getTemplate: function(template){
+        return axios.get(`/api/template/${template}`);
     }
 };

@@ -21,8 +21,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             });
         },
         getCustomer: (name, cb) => {
+            const fullName = decodeURI(name)
             const collection = mongodbConnection.db().collection("mailingList");
-            collection.findOne({ name: name }, (err, result) => {
+            collection.findOne({name:fullName}, (err, result) => {
                 !err ? cb(200, result) : cb(500, err);
             });
         },
