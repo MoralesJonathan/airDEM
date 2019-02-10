@@ -15,8 +15,7 @@ export default {
     return axios.delete("/api/campaign/" + id);
   },
   // Saves a Campaign to the database
-  saveCampaign: function(bookData) {
-    console.log(bookData);
-    //return axios.post("/api/campaign", bookData);
+  saveCampaign: function(campaignData) {
+    return axios.post("/api/campaign", campaignData);
   }
 };

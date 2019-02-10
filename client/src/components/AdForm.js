@@ -5,14 +5,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function AdForm() {
-    const [campaigns, setCampaigns] = useState([{ name: "Create new Campaign", date: new Date().toDateString(), markup: '' }]);
+    const [campaigns, setCampaigns] = useState(["Create New Campaign"]);
     const [error, setError] = useState(false);
     const [selected, setSelected] = useState(campaigns[0]);
+    const [name, setName] = useState("");
+    const [date, setDate] = useState(new Date().toString());
+    const [markup, setMarkUp] = useState("");
 
     useEffect(() => {
         API.getCampaigns().then((res) => {
-            if(res.length > 0){
-                setCampaigns(campaigns.concat(res));
+            if(res.data.length > 0){
+                setCampaigns(campaigns.concat(res.data));
             }
         })
             .catch((error) => {
@@ -23,25 +26,45 @@ function AdForm() {
 
     function handleSubmit(event){
         event.preventDefault();
-        //to look at form easily use console.dir
-        let form = event.currentTarget;
-        let current = {...selected};
-        let campaign = {};
-        console.dir(form);
-        //Destructuring the object form into the selected object while renaming the attributes
-        ({0: campaign.selected, 1: campaign.name, 3: campaign.markup} = form);
-        campaign.selected = campaign.selected.value;
-        campaign.markup = campaign.markup.value;
-        campaign.name = campaign.name.value;
-        campaign.date = current.date;
-        setSelected(campaign);
-        API.saveCampaign(campaign);
+        let editedCampaign = {
+            "name": name,
+            "date": date,
+            "markup": markup,
+            "selected": selected
+        }
+        console.log(editedCampaign);
+        API.saveCampaign(editedCampaign);
     }
 
-    function dateHandler(date){
+    function handleDateChange(date){
         let changedDate = {...selected};
         changedDate.date = date.toDateString();
-        setSelected(changedDate);
+        setDate(changedDate);
+    }
+
+    function handleNameChange(event){
+        setName(event.currentTarget.value);
+    }
+
+    function handleMarkUpChange(event){
+        setMarkUp(event.currentTarget.value);
+    }
+
+    function handleSelect(event){
+        if(event.currentTarget.value !== "Create New Campaign"){
+            API.getCampaign(event.currentTarget.value).then((res)=>{
+                setSelected(res.data.name);
+                setName(res.data.name);
+                setDate(res.data.date);
+                setMarkUp(res.data.markup);
+            })
+        }
+        else{
+            setSelected("Create New Campaign");
+                setName("");
+                setDate(new Date().toString());
+                setMarkUp("");
+        }
     }
 
     return (
@@ -52,22 +75,22 @@ function AdForm() {
                     <Form onSubmit={e => handleSubmit(e)}>
                         <Form.Group controlId="CampaignForm.CampaignSelect">
                             <Form.Label>Select Campaign</Form.Label>
-                            <Form.Control as="select" >
+                            <Form.Control as="select" onChange={handleSelect}>
                                 {campaigns.map((campaign) => (
-                                    <option key={campaign.name}>{campaign.name}</option>
+                                    <option key={campaign}>{campaign}</option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="CampaignForm.CampaignName">
                             <Form.Label>Campaign Name</Form.Label>
-                            <Form.Control type="name" placeholder="Campaign Name" />
+                            <Form.Control type="name" placeholder="Campaign Name" value={name} onChange={handleNameChange}/>
                         </Form.Group>
                         <Form.Group>
-                        <DatePicker id="CampaignForm.CampaignDatePicker" value={selected.date} onChange={dateHandler} />
+                        <DatePicker id="CampaignForm.CampaignDatePicker" value={date} onChange={handleDateChange} />
                         </Form.Group>
                         <Form.Group controlId="CampaignForm.CampaignMarkup">
                             <Form.Label>Email Markup</Form.Label>
-                            <Form.Control as="textarea" rows="3" />
+                            <Form.Control as="textarea" rows="3" value={markup} onChange={handleMarkUpChange}/>
                         </Form.Group>
                         <Button type="submit">Submit form</Button>
                     </Form>
