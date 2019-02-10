@@ -9,8 +9,9 @@ function AdForm() {
     const [error, setError] = useState(false);
     const [selected, setSelected] = useState(campaigns[0]);
     const [name, setName] = useState("");
-    const [date, setDate] = useState(new Date().toString());
+    const [date, setDate] = useState(new Date().toDateString());
     const [markup, setMarkUp] = useState("");
+    const [id, setId] = useState();
 
     useEffect(() => {
         API.getCampaigns().then((res) => {
@@ -32,17 +33,21 @@ function AdForm() {
             "markup": markup,
             "selected": selected
         }
-        console.log(editedCampaign);
-        API.saveCampaign(editedCampaign);
+        if(id){
+            editedCampaign._id = id;
+            API.updateCampaign(editedCampaign);
+        }
+        else{
+            API.saveCampaign(editedCampaign);
+        }
     }
 
     function handleDateChange(date){
-        let changedDate = {...selected};
-        changedDate.date = date.toDateString();
-        setDate(changedDate);
+        setDate(date.toDateString());
     }
 
     function handleNameChange(event){
+        console.log("Changing name", event.currentTarget.value)
         setName(event.currentTarget.value);
     }
 
@@ -57,12 +62,13 @@ function AdForm() {
                 setName(res.data.name);
                 setDate(res.data.date);
                 setMarkUp(res.data.markup);
+                setId(res.data._id);
             })
         }
         else{
             setSelected("Create New Campaign");
                 setName("");
-                setDate(new Date().toString());
+                setDate(new Date().toDateString());
                 setMarkUp("");
         }
     }

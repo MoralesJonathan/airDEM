@@ -16,6 +16,11 @@ export default {
   },
   // Saves a Campaign to the database
   saveCampaign: function(campaignData) {
+    return axios.put("/api/campaign", campaignData);
+  }
+  ,
+  // Updates a Campaign in the database
+  updateCampaign: function(campaignData) {
     return axios.post("/api/campaign", campaignData);
   }
 };

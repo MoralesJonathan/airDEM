@@ -16,6 +16,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 if (!error) {
                     const collection = mongodbConnection.db().collection("campaigns");
                     let {selected, ...obj} = data;
+                    console.log(obj);
                     collection.insertOne(obj, function(err, result) {
                         if(!err) {
                             const date = new Date(Date.now() + 10000),
@@ -25,6 +26,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                                 });
                             cb(200,{result,scheduledEmail})
                         } else {
+                            console.log(err);
                             cb(500,err);
                         } 
                     });

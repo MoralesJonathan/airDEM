@@ -10,7 +10,7 @@ router.get("/campaigns", (req, res) => {
     campaigns.getAllCampaigns((status, data = "ok") => res.status(status).send(data));
 });
 
-router.post("/campaign", (req, res) => {
+router.put("/campaign", (req, res) => {
     campaigns.createCampaign(req.body,(status, data = "ok") => res.status(status).send(data));
 });
 
