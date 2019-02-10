@@ -20,7 +20,7 @@ mailerService = {
             });
         });
         let airlinePromise = new Promise((resolve, reject) => {
-            mongoDb.collection("airlines").findOne({ aiataCode: airline }, (err, airlineInfo) => {
+            mongoDb.collection("airlines").findOne({ iataCode: airline }, (err, airlineInfo) => {
                 if (!err && airlineInfo !== null) {
                     resolve(airlineInfo)
                 } else {

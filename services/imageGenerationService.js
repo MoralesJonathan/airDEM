@@ -17,6 +17,7 @@ imageGenerationService = {
             let insertData = {
                 route: `${fare.originCity} (${fare.origin}) to ${fare.destinationCity} (${fare.destination})`,
                 destinationCityImage: fare.destinationCityImage,
+                departureDate: fare.fares[0].departureDate,
                 fareClass: fare.fares[0].farenetTravelClass,
                 searchDate: fare.fares[0].searchDate,
                 price: fare.fares[0].usdTotalPrice

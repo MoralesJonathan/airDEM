@@ -27,17 +27,17 @@ function AdForm() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        let editedCampaign = {
+        const editedCampaign = {
             "name": name,
             "date": date,
             "markup": markup,
-            "selected": selected
+            "selected": selected,
+            "iataCode": localStorage.getItem("iata")
         }
         if (id) {
             editedCampaign._id = id;
             API.updateCampaign(editedCampaign);
-        }
-        else {
+        } else {
             API.saveCampaign(editedCampaign);
         }
     }
@@ -80,9 +80,9 @@ function AdForm() {
                     <Form.Group controlId="CampaignForm.CampaignSelect">
                         <Form.Label>Select Campaign</Form.Label>
                         <Form.Control as="select" onChange={handleSelect}>
-                            {campaigns.map((campaign) => (
+                            {campaigns.map((campaign) => 
                                 <option key={campaign}>{campaign}</option>
-                            ))}
+                            )}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="CampaignForm.CampaignName">

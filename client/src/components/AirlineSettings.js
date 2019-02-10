@@ -10,10 +10,10 @@ function AirlineSettings() {
 
     useEffect(() => {
         API.getAirlineSettings().then((res) => {
-                setName(res.data.airlineName);
-                setEmail(res.data.airlineEmail);
-                setIata(res.data.iataCode)
-                localStorage.setItem("iata", res.data.iataCode);
+            setName(res.data.airlineName);
+            setEmail(res.data.airlineEmail);
+            setIata(res.data.iataCode)
+            localStorage.setItem("iata", res.data.iataCode);
         })
             .catch((error) => {
                 console.log(error);

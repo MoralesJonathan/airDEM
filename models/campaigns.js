@@ -14,10 +14,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             collection.insertOne(obj, function (err, result) {
                 if (!err) {
                     const date = new Date(Date.now() + 10000),
-                        { name } = obj,
-                        airlineCode = localStorage.getItem('iata'),
+                        { name, iataCode} = obj,
                         scheduledEmail = schedule.scheduleJob(date, () => {
-                            emailer.sendCampaign(name, airlineCode, mongodbConnection.db());
+                            emailer.sendCampaign(name, iataCode, mongodbConnection.db());
                         });
                     cb(200, { result, scheduledEmail })
                 } else {

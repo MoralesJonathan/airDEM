@@ -82,7 +82,6 @@ router.get("/airlinesTest", (req, res) => {
 router.get("/generateCard/:index/:airline/:campaignId", (req, res) => {
     let {index, airline, campaignId} = req.params;
     imageGeneration.retrieveImages(index, airline, campaignId).then(image =>{
-        console.log(image)
         res.writeHead(200, {
             'Content-Type': 'image/jpg',
             'Content-Length': image.length
