@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
 process.env.NODE_ENV === "production" ? null : require("dotenv").config()
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
+    service: 'gmail',
     auth: {
         user: process.env.EMAILUSERNAME,
         pass: process.env.EMAILPASSWORD
-    }
+    },
+    logger: true
 });
 mailerService = {
     sendCampaign: (campaignId, airline, mongoDb) => {
@@ -29,7 +29,11 @@ mailerService = {
             });
         });
         let recipientsPromise = new Promise((resolve, reject) => {
-            mongoDb.collection("mailingList").find({ airline: airline }).toArray((err, recipients) => {
+            console.log("airline")
+            console.log(airline)
+            mongoDb.collection("mailingList").find({ iata: airline }).toArray((err, recipients) => {
+                console.log(recipients)
+                console.log("recipients")
                 if (!err && recipients !== null) {
                     resolve(recipients)
                 } else {
@@ -38,10 +42,11 @@ mailerService = {
             });
         });
         Promise.all([campaignPromise,airlinePromise,recipientsPromise]).then(results => {
+            const emailArray = [];
+            results[2].forEach(reciptient => {emailArray.push(reciptient.email)})
             let mailOptions = {
                 from: `"${results[1].airlineName}" <${results[1].airlineEmail}>`,
-                to: results[1].airlineEmail,
-                bcc: results[2],
+                to: emailArray,
                 subject: results[0].subject,
                 text: results[0].markup,
                 html: results[0].markup
