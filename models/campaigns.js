@@ -1,4 +1,5 @@
 const mongodbConnection = require("../dbconfig/connection.js"),
+    ObjectId = require('mongodb').ObjectId,
     schedule = require("node-schedule"),
     emailer = require("../services/mailerService"),
     campaigns = {
@@ -22,7 +23,8 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                             const date = new Date(Date.now() + 10000),
                                 {name} = obj,
                                 scheduledEmail = schedule.scheduleJob(date, () => {
-                                    emailer.sendCampaign(name);
+                                    // emailer.sendCampaign(name);
+                                    console.log("HIO")
                                 });
                             cb(200,{result,scheduledEmail})
                         } else {
@@ -40,7 +42,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 if (!error) {
                     console.log(name);
                     const collection = mongodbConnection.db().collection("campaigns");
-                    collection.findOne({"name":name},(err, result) => {
+                    collection.findOne({name:name},(err, result) => {
                         !err?cb(200,result): cb(500,err);
                     });
                 } else {
@@ -71,6 +73,19 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 if (!error) {
                     const collection = mongodbConnection.db().collection("campaigns");
                     collection.deleteOne({campaignName:name}, function(err, result) {
+                        !err?cb(200,result): cb(500,err);
+                    });
+                } else {
+                    cb(500,error);
+                }
+            });
+        },
+        updateCampaign: (data,cb) => {
+            mongodbConnection.connect(error => {
+                if (!error) {
+                    const {_id, ...rest} = data
+                    const collection = mongodbConnection.db().collection("campaigns");
+                    collection.updateOne({_id:new ObjectId(data._id)}, {$set: rest}, function(err, result) {
                         !err?cb(200,result): cb(500,err);
                     });
                 } else {

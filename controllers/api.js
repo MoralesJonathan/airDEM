@@ -14,6 +14,10 @@ router.put("/campaign", (req, res) => {
     campaigns.createCampaign(req.body,(status, data = "ok") => res.status(status).send(data));
 });
 
+router.post("/campaign", (req, res) => {
+    campaigns.updateCampaign(req.body, (status, message = "ok") => res.status(status).send(message));
+});
+
 router.delete("/campaign/:id", (req, res) => {
     campaigns.deleteCampaign(req.params.id, (status, data = "ok") => res.status(status).send(data));
 });
@@ -23,3 +27,4 @@ router.get("/campaignsTest", (req, res) => {
 });
 
 module.exports = router;
+
