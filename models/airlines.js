@@ -22,7 +22,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         },
         getAirline: (name, cb) => {
             const collection = mongodbConnection.db().collection("airlines");
-            collection.findOne({ name: name }, (err, result) => {
+            collection.findOne({ airlineName: name }, (err, result) => {
                 !err ? cb(200, result) : cb(500, err);
             });
         },
@@ -30,7 +30,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             const collection = mongodbConnection.db().collection("airlines");
             collection.find({}).toArray((err, result) => {
                 if (!err) {
-                    result = result.map(a => a.name);
+                    result = result.map(a => a.airlineName);
                     cb(200, result)
                 }
                 else {
@@ -40,7 +40,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         },
         deleteAirline: (name, cb) => {
             const collection = mongodbConnection.db().collection("airlines");
-            collection.deleteOne({ name: name }, function (err, result) {
+            collection.deleteOne({ airlineName: name }, function (err, result) {
                 !err ? cb(200, result) : cb(500, err);
             });
         },
