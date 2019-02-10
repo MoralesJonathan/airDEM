@@ -14,6 +14,7 @@ function AirlineSettings() {
             setEmail(res.data.airlineEmail);
             setIata(res.data.iataCode)
             localStorage.setItem("iata", res.data.iataCode);
+            localStorage.setItem("airlineName", res.data.airlineName);
         })
             .catch((error) => {
                 console.log(error);
