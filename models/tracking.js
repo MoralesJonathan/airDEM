@@ -5,16 +5,14 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 cb(200)
             })
         },
-        logTracking: (data, cb) => {
+        logTracking: data => {
             const collection = mongodbConnection.db().collection("tracking");
             const today = new Date().toLocaleDateString();
-            const incrimentQuery = "events.$."+[data.type]
-            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { [incrimentQuery] : 1} } , {upsert: false, multi: false},  function (err, result) {
+            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
-                    cb(200, result )
+                    console.log("Click logged!")
                 } else {
                     console.log(err);
-                    cb(500, err);
                 }
             });
         },

@@ -95,8 +95,10 @@ router.get("/tracking/:iata", (req, res) => {
     tracking.getTracking(req.params.iata, (status, message = "ok") => res.status(status).send(message));
 });
 
-router.get("/tracking/:campaign/:type", (req, res) => {
-    tracking.logTracking({"type":req.params.type,"campaign":req.params.campaign},(status, message = "ok") => res.redirect('https://www.spirit.com/en/flights'));
+router.get("/tracking/:campaign/clicks", (req, res) => {
+    console.log(`tracking event ${req.params.campaign}`)
+    tracking.logTracking({"campaign":req.params.campaign})
+    res.redirect('https://www.spirit.com/en/flights');
 });
 
 router.get("/template/:name", (req, res) => {
