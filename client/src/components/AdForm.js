@@ -11,6 +11,7 @@ function AdForm() {
     const [name, setName] = useState("");
     const [date, setDate] = useState(new Date().toDateString());
     const [markup, setMarkUp] = useState("");
+    const [subject, setSubject] = useState("");
     const [id, setId] = useState();
 
     useEffect(() => {
@@ -32,7 +33,8 @@ function AdForm() {
             "date": date,
             "markup": markup,
             "selected": selected,
-            "iataCode": localStorage.getItem("iata")
+            "iataCode": localStorage.getItem("iata"),
+            "subject": subject
         }
         if (id) {
             editedCampaign._id = id;
@@ -48,6 +50,10 @@ function AdForm() {
 
     function handleNameChange(event) {
         setName(event.currentTarget.value);
+    }
+
+    function handleSubjectChange(event) {
+        setSubject(event.currentTarget.value);
     }
 
     function handleMarkUpChange(event) {
@@ -87,10 +93,14 @@ function AdForm() {
                     </Form.Group>
                     <Form.Group controlId="CampaignForm.CampaignName">
                         <Form.Label>Campaign Name</Form.Label>
-                        <Form.Control type="name" placeholder="Campaign Name" value={name} onChange={handleNameChange} />
+                        <Form.Control type="text" placeholder="Campaign Name" value={name} onChange={handleNameChange} />
                     </Form.Group>
                     <Form.Group>
                         <DatePicker id="CampaignForm.CampaignDatePicker" value={date} onChange={handleDateChange} />
+                    </Form.Group>
+                    <Form.Group controlId="CampaignForm.CampaignSubject">
+                        <Form.Label>Email Subject</Form.Label>
+                        <Form.Control type="text" value={subject} onChange={handleSubjectChange} />
                     </Form.Group>
                     <Form.Group controlId="CampaignForm.CampaignMarkup">
                         <Form.Label>Email Markup</Form.Label>
