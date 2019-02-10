@@ -4,93 +4,56 @@ const mongodbConnection = require("../dbconfig/connection.js"),
     emailer = require("../services/mailerService"),
     campaigns = {
         test: cb => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    cb(200);
-                } else {
-                    cb(500,error);
-                }
-            });
+            mongodbConnection.db().stats(result => {
+                cb(200)
+            })
         },
         createCampaign: (data, cb) => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    const collection = mongodbConnection.db().collection("campaigns");
-                    let {selected, ...obj} = data;
-                    console.log(obj);
-                    collection.insertOne(obj, function(err, result) {
-                        if(!err) {
-                            const date = new Date(Date.now() + 10000),
-                                {name} = obj,
-                                scheduledEmail = schedule.scheduleJob(date, () => {
-                                    // emailer.sendCampaign(name);
-                                    console.log("HIO")
-                                });
-                            cb(200,{result,scheduledEmail})
-                        } else {
-                            console.log(err);
-                            cb(500,err);
-                        } 
-                    });
+            const collection = mongodbConnection.db().collection("campaigns");
+            let { selected, ...obj } = data;
+            collection.insertOne(obj, function (err, result) {
+                if (!err) {
+                    const date = new Date(Date.now() + 10000),
+                        { name, airlineName } = obj,
+                        scheduledEmail = schedule.scheduleJob(date, () => {
+                            emailer.sendCampaign(name,airlineName, mongodbConnection.db());
+                        });
+                    cb(200, { result, scheduledEmail })
                 } else {
-                    cb(500,error);
+                    console.log(err);
+                    cb(500, err);
                 }
             });
         },
-        getCampaign: (name,cb) => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    console.log(name);
-                    const collection = mongodbConnection.db().collection("campaigns");
-                    collection.findOne({name:name},(err, result) => {
-                        !err?cb(200,result): cb(500,err);
-                    });
-                } else {
-                    cb(500,error);
-                }
+        getCampaign: (name, cb) => {
+            const collection = mongodbConnection.db().collection("campaigns");
+            collection.findOne({ name: name }, (err, result) => {
+                !err ? cb(200, result) : cb(500, err);
             });
         },
         getAllCampaigns: cb => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    const collection = mongodbConnection.db().collection("campaigns");
-                    collection.find({}).toArray((err, result) => {
-                        if(!err){
-                            result = result.map(a => a.name);
-                            cb(200,result)
-                         }
-                         else {
-                            cb(500,err);
-                         }
-                    });
-                } else {
-                    cb(500,error);
+            const collection = mongodbConnection.db().collection("campaigns");
+            collection.find({}).toArray((err, result) => {
+                if (!err) {
+                    result = result.map(a => a.name);
+                    cb(200, result)
+                }
+                else {
+                    cb(500, err);
                 }
             });
         },
-        deleteCampaign: (name,cb) => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    const collection = mongodbConnection.db().collection("campaigns");
-                    collection.deleteOne({campaignName:name}, function(err, result) {
-                        !err?cb(200,result): cb(500,err);
-                    });
-                } else {
-                    cb(500,error);
-                }
+        deleteCampaign: (name, cb) => {
+            const collection = mongodbConnection.db().collection("campaigns");
+            collection.deleteOne({ campaignName: name }, function (err, result) {
+                !err ? cb(200, result) : cb(500, err);
             });
         },
-        updateCampaign: (data,cb) => {
-            mongodbConnection.connect(error => {
-                if (!error) {
-                    const {_id, ...rest} = data
-                    const collection = mongodbConnection.db().collection("campaigns");
-                    collection.updateOne({_id:new ObjectId(data._id)}, {$set: rest}, function(err, result) {
-                        !err?cb(200,result): cb(500,err);
-                    });
-                } else {
-                    cb(500,error);
-                }
+        updateCampaign: (data, cb) => {
+            const { _id, ...rest } = data
+            const collection = mongodbConnection.db().collection("campaigns");
+            collection.updateOne({ _id: new ObjectId(data._id) }, { $set: rest }, function (err, result) {
+                !err ? cb(200, result) : cb(500, err);
             });
         }
     };

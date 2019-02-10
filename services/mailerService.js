@@ -9,10 +9,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 mailerService = {
-    sendCampaign: (campaignId, airline, collection) => {
+    sendCampaign: (campaignId, airline, mongoDb) => {
         let campaignPromise = new Promise((resolve, reject) => {
-            collection.findOne({ campaignName: campaignId }, (err, campaignInfo) => {
-                if (!err) {
+            mongoDb.collection("campaigns").findOne({ name: campaignId }, (err, campaignInfo) => {
+                if (!err && campaignInfo !== null) {
                     resolve(campaignInfo)
                 } else {
                     reject("Error finding campaign. Cannot send emails")
@@ -20,8 +20,8 @@ mailerService = {
             });
         });
         let airlinePromise = new Promise((resolve, reject) => {
-            collection.findOne({ airlineName: airline }, (err, airlineInfo) => {
-                if (!err) {
+            mongoDb.collection("airlines").findOne({ airlineName: airline }, (err, airlineInfo) => {
+                if (!err && airlineInfo !== null) {
                     resolve(airlineInfo)
                 } else {
                     reject("Error finding airline. Cannot send emails")
@@ -29,15 +29,15 @@ mailerService = {
             });
         });
         let recipientsPromise = new Promise((resolve, reject) => {
-            collection.find({ airline: airline }).toArray((err, recipients) => {
-                if (!err) {
+            mongoDb.collection("mailingList").find({ airline: airline }).toArray((err, recipients) => {
+                if (!err && recipients !== null) {
                     resolve(recipients)
                 } else {
                     reject("Error finding recipients. Cannot send emails")
                 }
             });
         });
-        Promise.all([campaignPromise,airlinePromise,recipientsPromise], results => {
+        Promise.all([campaignPromise,airlinePromise,recipientsPromise]).then(results => {
             let mailOptions = {
                 from: `"${results[1].airlineName}" <${results[1].airlineEmail}>`,
                 to: results[1].airlineEmail,
@@ -53,8 +53,9 @@ mailerService = {
                 }
                 console.log(`Message sent successfully! ${JSON.stringify(info)}`);
             })
-        })
-
+        }).catch(error => {
+            console.log(`Could not send emails: ${error}`)
+        });
     }
 }
 
