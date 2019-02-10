@@ -80,7 +80,9 @@ function AdForm() {
 
     function handleTemplateSelect(event) {
         API.getTemplate(event.currentTarget.value).then(res => {
-            setMarkUp(res.data.content);  
+            const regex = /{{{campaignName}}}}/gi
+            const markup = res.data.content.replace(regex, name)
+            setMarkUp(markup);  
         });
         
     }
