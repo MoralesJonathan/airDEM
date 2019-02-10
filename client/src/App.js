@@ -34,9 +34,9 @@ class App extends Component {
             </Col>
             <Col xs={9}>
               <Switch>
-                <Route exact path="/" component={AdForm} />
+                <Route path="/campaigns" component={AdForm} />
                 <Route path="/emailList" component={EmailListForm} />
-                <Route path="/airlineSettings" component={AirlineSettings} />
+                <Route exact path="/" component={AirlineSettings} />
               </Switch>
             </Col>
           </Row>

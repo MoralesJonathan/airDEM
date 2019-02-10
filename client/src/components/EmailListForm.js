@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API from "../utils/API";
-import { Form, Alert, Button, Container, Table } from "react-bootstrap";
+import { Form, Alert, Button, Container } from "react-bootstrap";
 
 function EmailListForm() {
     const [customers, setCustomers] = useState(["Create New Customer"]);

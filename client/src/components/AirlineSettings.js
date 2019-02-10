@@ -5,12 +5,15 @@ import { Form, Alert, Button, Container} from "react-bootstrap";
 function AirlineSettings() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [iata, setIata] = useState("");
     const [error, setError] = useState(false);
 
     useEffect(() => {
         API.getAirlineSettings().then((res) => {
                 setName(res.data.airlineName);
                 setEmail(res.data.airlineEmail);
+                setIata(res.data.iataCode)
+                localStorage.setItem("iata", res.data.iataCode);
         })
             .catch((error) => {
                 console.log(error);
@@ -23,12 +26,17 @@ function AirlineSettings() {
         let editedAirline = {
             airlineName: name,
             airlineEmail: email,
+            iataCode: iata
         }
         API.updateAirlineSettings(editedAirline);
     }
 
     function handleNameChange(event) {
         setName(event.currentTarget.value);
+    }
+
+    function handleIataChange(event){
+        setIata(event.currentTarget.value);
     }
 
     function handleEmailChange(event) {
@@ -43,7 +51,11 @@ function AirlineSettings() {
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group controlId="EmailForm.AirlineName">
                         <Form.Label>Customer Name</Form.Label>
-                        <Form.Control type="name" placeholder="Volaris" value={name} onChange={handleNameChange} />
+                        <Form.Control type="text" placeholder="Volaris" value={name} onChange={handleNameChange} />
+                    </Form.Group>
+                    <Form.Group controlId="EmailForm.IATACode">
+                        <Form.Label>IATA Code</Form.Label>
+                        <Form.Control type="text" placeholder="Y4" value={iata} onChange={handleIataChange} />
                     </Form.Group>
                     <Form.Group controlId="EmailForm.AirlineEmail">
                         <Form.Label>Customer Email</Form.Label>
