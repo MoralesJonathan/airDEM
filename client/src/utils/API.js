@@ -44,11 +44,11 @@ export default {
   },
   // Updates a Customer in the database
   getAirlineSettings: function() {
-    return axios.get("/api/airlineSettings");
+    return axios.get("/api/airlines");
   },
   // Updates a Customer in the database
   updateAirlineSettings: function(airlineSettings) {
-    return axios.post("/api/airlineSettings", airlineSettings);
+    return axios.post("/api/airline", airlineSettings);
   }
 
 };
