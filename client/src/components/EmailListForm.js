@@ -39,7 +39,6 @@ function EmailListForm() {
     }
 
     function handleNameChange(event) {
-        console.log("Changing name", event.currentTarget.value)
         setName(event.currentTarget.value);
     }
 

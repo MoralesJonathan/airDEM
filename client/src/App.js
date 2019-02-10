@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import "./App.css";
 import AdForm from "./components/AdForm.js"
 import EmailListForm from "./components/EmailListForm.js"
+import AirlineSettings from "./components/AirlineSettings.js"
 import { Row, Col, Navbar } from "react-bootstrap";
 import SideNav from "./components/SideNav"
-import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 class App extends Component {
   render() {
@@ -35,6 +36,7 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={AdForm} />
                 <Route path="/emailList" component={EmailListForm} />
+                <Route path="/airlineSettings" component={AirlineSettings} />
               </Switch>
             </Col>
           </Row>

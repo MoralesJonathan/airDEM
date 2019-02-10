@@ -37,10 +37,18 @@ export default {
   // Saves a Customer to the database
   saveCustomer: function(customerData) {
     return axios.put("/api/customer", customerData);
-  }
-  ,
+  },
   // Updates a Customer in the database
   updateCustomer: function(customerData) {
     return axios.post("/api/customer", customerData);
+  },
+  // Updates a Customer in the database
+  getAirlineSettings: function() {
+    return axios.get("/api/airlineSettings");
+  },
+  // Updates a Customer in the database
+  updateAirlineSettings: function(airlineSettings) {
+    return axios.post("/api/airlineSettings", airlineSettings);
   }
+
 };

@@ -10,7 +10,7 @@ function SideNav() {
       <div className="list-group list-group-flush">
         <Link to="/" className="list-group-item list-group-item-action bg-light">Campaigns</Link>
         <Link to="/emailList" className="list-group-item list-group-item-action bg-light">Email List</Link>
-        <a href="#" className="list-group-item list-group-item-action bg-light">Events</a>
+        <Link to="/airlineSettings" className="list-group-item list-group-item-action bg-light">Airline Settings</Link>
         <a href="#" className="list-group-item list-group-item-action bg-light">Profile</a>
         <a href="#" className="list-group-item list-group-item-action bg-light">Status</a>
       </div>
