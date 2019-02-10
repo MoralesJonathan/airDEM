@@ -8,7 +8,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         logTracking: data => {
             const collection = mongodbConnection.db().collection("tracking");
             const today = new Date().toLocaleDateString();
-            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
+            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "events.$.clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
                     console.log("Click logged!")
                 } else {
