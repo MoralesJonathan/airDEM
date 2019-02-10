@@ -48,7 +48,7 @@ export default {
   },
   // Updates a Customer in the database
   updateAirlineSettings: function(airlineSettings) {
-    return axios.post("/api/airline", airlineSettings);
+    return axios.put("/api/airline", airlineSettings);
   }
 
 };

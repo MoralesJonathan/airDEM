@@ -10,8 +10,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         },
         createAirline: (data, cb) => {
             const collection = mongodbConnection.db().collection("airlines");
-            let { selected, ...obj } = data;
-            collection.insertOne(obj, function (err, result) {
+            collection.insertOne(data, function (err, result) {
                 if (!err) {
                     cb(200, result )
                 } else {
@@ -30,8 +29,8 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             const collection = mongodbConnection.db().collection("airlines");
             collection.find({}).toArray((err, result) => {
                 if (!err) {
-                    result = result.map(a => a.airlineName);
-                    cb(200, result)
+                    let {0: airline} = result;
+                    cb(200, airline)
                 }
                 else {
                     cb(500, err);

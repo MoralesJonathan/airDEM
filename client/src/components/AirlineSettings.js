@@ -9,10 +9,8 @@ function AirlineSettings() {
 
     useEffect(() => {
         API.getAirlineSettings().then((res) => {
-            if (res.data.length > 0) {
                 setName(res.data.airlineName);
                 setEmail(res.data.airlineEmail);
-            }
         })
             .catch((error) => {
                 console.log(error);
