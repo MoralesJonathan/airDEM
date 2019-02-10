@@ -5,9 +5,11 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 cb(200)
             })
         },
-        addTracking: (data, cb) => {
+        logTracking: (data, cb) => {
             const collection = mongodbConnection.db().collection("tracking");
-            collection.insertOne(data, function (err, result) {
+            const today = new Date().toLocaleDateString();
+            const incrimentQuery = "events.$."+[data.type]
+            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { [incrimentQuery] : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
                     cb(200, result )
                 } else {
@@ -22,7 +24,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 if(!err){
                     let chartArray = [];
                     results.forEach(result => {
-                        let {campaign, dates} = result;
+                        let {campaign, events} = result;
                         let chartData = {
                             labels : [],
                             datasets: [{
@@ -34,9 +36,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                                 data: []
                             }]
                         }
-                        dates.forEach(trackingDay => {
-                            chartData.labels.push(Object.keys(trackingDay)[0])
-                            chartData.datasets[0].data.push(Object.values(trackingDay)[0])
+                        events.forEach(event => {
+                            chartData.labels.push(event.date)
+                            chartData.datasets[0].data.push(event.clicks)
                         })
                         chartArray.push(chartData)
                     })

@@ -94,8 +94,8 @@ router.get("/tracking/:iata", (req, res) => {
     tracking.getTracking(req.params.iata, (status, message = "ok") => res.status(status).send(message));
 });
 
-router.put("/tracking", (req, res) => {
-    airlines.test((status, message = "ok") => res.status(status).send(message));
+router.get("/tracking/:campaign/:type", (req, res) => {
+    tracking.logTracking({"type":req.params.type,"campaign":req.params.campaign},(status, message = "ok") => res.status(status).send(message));
 });
 
 module.exports = router;
