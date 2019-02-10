@@ -1,4 +1,5 @@
 const axios = require('axios');
+const imageCompositionService = require("../services/imageCompositionService");
 process.env.NODE_ENV === "production" ? null : require("dotenv").config()
 imageGenerationService = {
     getFlightInfo: (index, airline, campaignId) => {
@@ -9,6 +10,21 @@ imageGenerationService = {
             dataType: "json",
             contentType: "application/json;charset=UTF-8"
         })
+    },
+    retriveImages: (index, airline, campaignId) => {
+        return getFlightInfo(index, airline, campaignId).then((res)=>{
+            let fare = res.data[index - 1];
+            let insertData = {
+                route: `${fare.originCity} (${fare.origin}) to ${fare.destinationCity} (${fare.destination})`,
+                destinationCityImage: fare.destinationCityImage,
+                fareClass: fare.fares[0].farenetTravelClass,
+                searchDate: fare.fares[0].searchDate,
+                price: fare.fares[0].usdTotalPrice
+            }
+            imageCompositionService.compositeImage(insertDataimage, image => {
+                return image;
+            });
+        });
     }
 }
 
