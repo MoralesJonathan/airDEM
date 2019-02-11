@@ -12,7 +12,7 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             const collection = mongodbConnection.db().collection("campaigns");
             const trackingCollection = mongodbConnection.db().collection("tracking");
             let { selected, ...obj } = data;
-            trackingCollection.insertOne({"campaign": obj.name, "iataCode": obj.iataCode, "events": [{"date": new Date(obj.date).toLocaleDateString(),"clicks":0,"views":0}]}, function (err, result) {
+            trackingCollection.insertOne({"campaign": obj.name, "iataCode": obj.iataCode, "routesOffsetStartDate": obj.routesOffsetStartDate, "routesOffsetStartDate":obj.routesOffsetStartDate, "events": [{"date": new Date(obj.date).toLocaleDateString(),"clicks":0,"views":0}]}, function (err, result) {
                 if (!err) {
                     collection.insertOne(obj, function (err, result) {
                         if (!err) {

@@ -80,14 +80,15 @@ router.get("/airlinesTest", (req, res) => {
     airlines.test((status, message = "ok") => res.status(status).send(message));
 });
 
-router.get("/generateCard/:index/:airline/:campaignId", (req, res) => {
-    let {index, airline, campaignId} = req.params;
-    imageGeneration.retrieveImages(index, airline, campaignId).then(image =>{
+router.get("/generateCard/:index/:airline/:lookahead1-:lookahead2/:campaignId", (req, res) => {
+    let {index, airline, campaignId, lookahead1,lookahead2} = req.params;
+    imageGeneration.retrieveImages(index, airline, [lookahead1, lookahead2], campaignId).then(image =>{
         res.writeHead(200, {
             'Content-Type': 'image/jpg',
             'Content-Length': image.length
           });
           res.end(image); 
+          tracking.logViewTracking({"campaign":campaignId})
     })
 })
 
@@ -96,8 +97,7 @@ router.get("/tracking/:iata", (req, res) => {
 });
 
 router.get("/tracking/:campaign/clicks", (req, res) => {
-    console.log(`tracking event ${req.params.campaign}`)
-    tracking.logTracking({"campaign":req.params.campaign})
+    tracking.logClickTracking({"campaign":req.params.campaign})
     res.redirect('https://www.spirit.com/en/flights');
 });
 

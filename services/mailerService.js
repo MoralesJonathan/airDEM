@@ -29,11 +29,7 @@ mailerService = {
             });
         });
         let recipientsPromise = new Promise((resolve, reject) => {
-            console.log("airline")
-            console.log(airline)
             mongoDb.collection("mailingList").find({ iata: airline }).toArray((err, recipients) => {
-                console.log(recipients)
-                console.log("recipients")
                 if (!err && recipients !== null) {
                     resolve(recipients)
                 } else {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API from "../utils/API";
-import { Form, Alert, Button, Container } from "react-bootstrap";
+import "./SideNav.css";
+import {Col,  Form, Alert, Button, Container } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -10,6 +11,8 @@ function AdForm() {
     const [selected, setSelected] = useState(campaigns[0]);
     const [name, setName] = useState("");
     const [date, setDate] = useState(new Date().toDateString());
+    const [routesEndOffset, setRoutesEndOffset] = useState(7)
+    const [routesStartOffset, setRoutesStartOffset] = useState(1)
     const [markup, setMarkUp] = useState("");
     const [subject, setSubject] = useState("");
     const [id, setId] = useState();
@@ -31,6 +34,8 @@ function AdForm() {
         const editedCampaign = {
             "name": name,
             "date": date,
+            "routesOffsetStartDate": routesStartOffset * 86400000,
+            "routesOffsetEndDate": routesEndOffset * 86400000,
             "markup": markup,
             "selected": selected,
             "iataCode": localStorage.getItem("iata"),
@@ -46,6 +51,14 @@ function AdForm() {
 
     function handleDateChange(date) {
         setDate(date.toDateString());
+    }
+    
+    function handleRoutesStartDateChange(event) {
+        setRoutesStartOffset(parseInt(event.currentTarget.value));
+    }
+
+    function handleRoutesEndDateChange(event) {
+        setRoutesEndOffset(parseInt(event.currentTarget.value));
     }
 
     function handleNameChange(event) {
@@ -66,11 +79,12 @@ function AdForm() {
                 setSelected(res.data.name);
                 setName(res.data.name);
                 setDate(res.data.date);
+                setRoutesStartOffset(res.data.routesOffsetStartDate / 86400000);
+                setRoutesEndOffset(res.data.routesOffsetEndDate / 86400000);
                 setMarkUp(res.data.markup);
                 setId(res.data._id);
             })
-        }
-        else {
+        } else {
             setSelected("Create New Campaign");
             setName("");
             setDate(new Date().toDateString());
@@ -80,8 +94,7 @@ function AdForm() {
 
     function handleTemplateSelect(event) {
         API.getTemplate(event.currentTarget.value).then(res => {
-            const regex = /{{{campaignName}}}}/gi
-            const markup = res.data.content.replace(regex, name)
+            const markup = res.data.content.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset* 86400000}-${(routesStartOffset+routesEndOffset)* 86400000}`)
             setMarkUp(markup);  
         });
         
@@ -89,7 +102,7 @@ function AdForm() {
 
     return (
         <React.Fragment>
-            <Container style={{paddingTop: '20px'}}>
+            <Container style={{paddingTop: "20px"}}>
                 {error ? <Alert dismissible variant="danger">There was an error loading your Campaigns</Alert> : null}
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group controlId="CampaignForm.CampaignSelect">
@@ -104,9 +117,24 @@ function AdForm() {
                         <Form.Label>Campaign Name</Form.Label>
                         <Form.Control type="text" placeholder="Campaign Name" value={name} onChange={handleNameChange} />
                     </Form.Group>
-                    <Form.Group>
-                        <DatePicker id="CampaignForm.CampaignDatePicker" value={date} onChange={handleDateChange} />
+                    <Form.Group controlId="CampaignForm.CampaignDatePicker">
+                        <Form.Label>Campaign Launch Date</Form.Label>
+                        <DatePicker value={date} onChange={handleDateChange} />
                     </Form.Group>
+                    <Form.Row>
+                        <Col>
+                            <Form.Group controlId="CampaignForm.RoutesOffsetStartDate">
+                                <Form.Label>Campaign Routes Start Date Offset</Form.Label>
+                                <Form.Control placeholder="1" type="number" value={routesStartOffset} onChange={handleRoutesStartDateChange} />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="CampaignForm.RoutesOffsetEndDate"> 
+                                <Form.Label>Campaign Routes End Date Offset</Form.Label>
+                                <Form.Control placeholder="7" type="number" value={routesEndOffset} onChange={handleRoutesEndDateChange} />
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
                     <Form.Group controlId="CampaignForm.CampaignSubject">
                         <Form.Label>Email Subject</Form.Label>
                         <Form.Control type="text" value={subject} onChange={handleSubjectChange} />

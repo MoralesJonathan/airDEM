@@ -2,8 +2,8 @@ const axios = require('axios');
 const imageCompositionService = require("../services/imageCompositionService");
 process.env.NODE_ENV === "production" ? null : require("dotenv").config()
 imageGenerationService = {
-    getFlightInfo: (index, airline, campaignId) => {
-        return axios.post(`${process.env.FARES_API}${airline}/fares/grouped-routes`, { "flightType": "ONE_WAY", "travelClasses": ["ECONOMY"], "priceFormat": { "decimalSeparator": "", "thousandSeparator": "", "decimalPlaces": 0 }, "datePattern": "MM/dd/yyyy", "languageCode": "en", "outputCurrencies": ["USD"], "routesLimit": 11, "faresPerRoute": 1, "dataExpirationWindow": "1d", "outputFields": ["returnDate", "usdTotalPrice", "popularity", "originCity", "destinationCity", "destinationAirportImage", "destinationCityImage", "destinationStateImage", "destinationCountryImage", "destinationRegionImage", "farenetTravelClass", "travelClass", "flightDeltaDays"], "sorting": [{ "popularity": "DESC" }, { "usdTotalPrice": "ASC" }], "departure": { "start": "2019-02-10", "end": "2019-05-11" }, "origins": [], "destinations": [] }, {
+    getFlightInfo: (index, airline, routesDateSecondsOffset, campaignId) => {
+        return axios.post(`${process.env.FARES_API}${airline}/fares/grouped-routes`, { "flightType": "ROUND_TRIP", "priceFormat": { "decimalSeparator": ".", "thousandSeparator": ",", "decimalPlaces": 0 }, "datePattern": "MM/dd/yyyy", "languageCode": "en", "outputCurrencies": [ "USD" ], "faresPerRoute": 1, "routesLimit": 10, "dataExpirationWindow": "2d", "outputFields": [ "returnDate", "usdTotalPrice", "popularity", "originCity", "destinationCity", "destinationAirportImage", "destinationCityImage", "destinationStateImage", "destinationCountryImage", "farenetTravelClass", "travelClass" ], "sorting": [ { "popularity": "DESC" }, { "usdTotalPrice": "ASC" } ], "departure": { "start": new Date(new Date().getTime() + parseInt(routesDateSecondsOffset[0])).toISOString().slice(0, 10), "end": new Date(new Date().getTime() + parseInt(routesDateSecondsOffset[1])).toISOString().slice(0, 10) }, "origins": [], "destinations": [] }, {
             headers: {
                 "Authorization": `${process.env.FARES_TOKEN}`
             },
@@ -11,8 +11,8 @@ imageGenerationService = {
             contentType: "application/json;charset=UTF-8"
         })
     },
-    retrieveImages(index, airline, campaignId) {
-        return this.getFlightInfo(index, airline, campaignId).then((res) => {
+    retrieveImages(index, airline, routesLookahead, campaignId) {
+        return this.getFlightInfo(index, airline, routesLookahead, campaignId).then((res) => {
             let fare = res.data[index - 1];
             let insertData = {
                 route: `${fare.originCity} (${fare.origin}) to ${fare.destinationCity} (${fare.destination})`,

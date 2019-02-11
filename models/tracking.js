@@ -5,12 +5,23 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 cb(200)
             })
         },
-        logTracking: data => {
+        logClickTracking: data => {
             const collection = mongodbConnection.db().collection("tracking");
             const today = new Date().toLocaleDateString();
             collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "events.$.clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
                     console.log("Click logged!")
+                } else {
+                    console.log(err);
+                }
+            });
+        },
+        logViewTracking: data => {
+            const collection = mongodbConnection.db().collection("tracking");
+            const today = new Date().toLocaleDateString();
+            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "events.$.views" : 1} } , {upsert: false, multi: false},  function (err, result) {
+                if (!err) {
+                    console.log("View logged!")
                 } else {
                     console.log(err);
                 }
