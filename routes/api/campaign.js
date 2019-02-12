@@ -15,7 +15,7 @@ router.get("/:airline/:id", (req, res) => {
 });
 
 router.put("/", (req, res) => {
-    campaigns.createCampaign(req.params.airline, req.body,(status, data = "ok") => res.status(status).send(data));
+    campaigns.createCampaign(req.body,(status, data = "ok") => res.status(status).send(data));
 });
 
 router.post("/", (req, res) => {
