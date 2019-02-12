@@ -4,7 +4,7 @@ import axios from "axios";
 export default {
     // Gets all Campaign names
     getCampaigns: function(iata) {
-        return axios.get(`/api/campaigns/${iata}`);
+        return axios.get(`/api/campaign/campaigns/${iata}`);
     },
     // Gets the Campgain with the given id
     getCampaign: function(id,iata) {
@@ -24,7 +24,7 @@ export default {
     },
     // Gets all Customer
     getCustomers: function(iata) {
-        return axios.get(`/api/customers/${iata}`);
+        return axios.get(`/api/customer/customers/${iata}`);
     },
     // Gets the Customer with the given id
     getCustomer: function(id) {
@@ -48,7 +48,7 @@ export default {
     },
     // Gets all airline names
     getAirlines: function() {
-        return axios.get("/api/airlines");
+        return axios.get("/api/airline/airlines");
     },
     // Updates an airline setting in the database
     updateAirlineSettings: function(airlineSettings) {

@@ -1,7 +1,7 @@
 const express = require("express"),
     path = require("path"),
     bodyParser = require("body-parser"),
-    apiRoutes = require("./controllers/api.js"),
+    apiRoutes = require("./routes/api"),
     PORT = process.env.PORT || 3001,
     app = express();
 
