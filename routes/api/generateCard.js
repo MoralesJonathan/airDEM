@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const imageGeneration = require("../../services/imageGenerationService");
-   
+const tracking = require("../../controllers/tracking.js");
 
 router.get("/:index/:airline/:lookahead1-:lookahead2/:campaignId", (req, res) => {
     let {index, airline, campaignId, lookahead1,lookahead2} = req.params;

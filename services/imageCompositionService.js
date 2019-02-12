@@ -42,24 +42,17 @@ imageCompositingService = {
                     });
                 })
                 const routefontPromise = new Promise((resolve, reject) => {
-                    if (data.route.length > 34) {
-                        Jimp.loadFont('cardTemplate/routeFontSmaller.fnt', function (err, routefont) {
-                            !err ? resolve(routefont) : reject(err)
-                        });
-                    } else {
                         Jimp.loadFont('cardTemplate/routeFont.fnt', function (err, routefont) {
                             !err ? resolve(routefont) : reject(err)
                         });
-                    }
                 })
                 Promise.all([dateFontPromise, priceFontPromise, buttonfontPromise, routefontPromise, timestampfontPromise]).then(fonts => {
                     results[1]
                         .composite(results[0], 0, 0)
-                        .print(fonts[3], 20, 175, data.route)
-                        .print(fonts[0], 20, 215, `Leaving ${data.departureDate}`)
-                        .print(fonts[0], 200, 300, { text: `Each way / ${data.fareClass}`, alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT, alignmentY: Jimp.VERTICAL_ALIGN_TOP })
-                        .print(fonts[1], 240, 260, { text: `$${data.price}`, alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT, alignmentY: Jimp.VERTICAL_ALIGN_TOP })   
-                        .print(fonts[2], 125, 365, "BUY NOW")
+                        .print(fonts[3], 20, 175, data.route, 310,(err, image, { x, y }) => { image.print(fonts[0], 20, y+10, `Leaving ${new Date(data.departureDate).toLocaleDateString()}`, 300); })
+                        .print(fonts[1], 310, 250, { text: `$${Math.round(data.price)}`, alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT, alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE },0,0)
+                        .print(fonts[0], 160 , 305, { text: `Each way / ${data.fareClass}`, alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT, alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE },150, 20)
+                        .print(fonts[2], 115, 367, "BUY NOW")
                         .print(fonts[4], 15, 430, `Prices updated ${new Date(data.searchDate).toLocaleString()}`)
                         .quality(100)
                         .getBuffer(Jimp.MIME_JPEG, (e, imageBuffer) => {
