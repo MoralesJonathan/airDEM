@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import API from "../utils/API";
 import "./SideNav.css";
-import {Col,  Form, Alert, Button, Container } from "react-bootstrap";
+import "./AdForm.css";
+import { Col, Form, Alert, Button, Container } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,6 +14,7 @@ function AdForm() {
     const [date, setDate] = useState(new Date().toDateString());
     const [routesEndOffset, setRoutesEndOffset] = useState(7)
     const [routesStartOffset, setRoutesStartOffset] = useState(1)
+    const [template, setTemplate] = useState("");
     const [markup, setMarkUp] = useState("");
     const [subject, setSubject] = useState("");
     const [id, setId] = useState();
@@ -52,17 +54,20 @@ function AdForm() {
     function handleDateChange(date) {
         setDate(date.toDateString());
     }
-    
+
     function handleRoutesStartDateChange(event) {
         setRoutesStartOffset(parseInt(event.currentTarget.value));
+        if (template !== "") updateMarkup()
     }
 
     function handleRoutesEndDateChange(event) {
         setRoutesEndOffset(parseInt(event.currentTarget.value));
+        if (template !== "") updateMarkup()
     }
 
     function handleNameChange(event) {
         setName(event.currentTarget.value);
+        if (template !== "") updateMarkup()
     }
 
     function handleSubjectChange(event) {
@@ -93,22 +98,33 @@ function AdForm() {
     }
 
     function handleTemplateSelect(event) {
-        API.getTemplate(event.currentTarget.value).then(res => {
-            const markup = res.data.content.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset* 86400000}-${(routesStartOffset+routesEndOffset)* 86400000}`)
-            setMarkUp(markup);  
-        });
-        
+        if (event.currentTarget.value !== "None") {
+            API.getTemplate(event.currentTarget.value).then(res => {
+                setTemplate(res.data.content);
+                const markup = res.data.content.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+                setMarkUp(markup);
+            });
+        } else {
+            setTemplate("");
+            setMarkUp("");
+        }
+
+    }
+
+    function updateMarkup() {
+        const markup = template.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+        setMarkUp(markup);
     }
 
     return (
         <React.Fragment>
-            <Container style={{paddingTop: "20px"}}>
+            <Container style={{ paddingTop: "20px" }}>
                 {error ? <Alert dismissible variant="danger">There was an error loading your Campaigns</Alert> : null}
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group controlId="CampaignForm.CampaignSelect">
                         <Form.Label>Select Campaign</Form.Label>
                         <Form.Control as="select" onChange={handleSelect}>
-                            {campaigns.map((campaign) => 
+                            {campaigns.map((campaign) =>
                                 <option key={campaign}>{campaign}</option>
                             )}
                         </Form.Control>
@@ -129,7 +145,7 @@ function AdForm() {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="CampaignForm.RoutesOffsetEndDate"> 
+                            <Form.Group controlId="CampaignForm.RoutesOffsetEndDate">
                                 <Form.Label>Campaign Routes End Date Offset</Form.Label>
                                 <Form.Control placeholder="7" type="number" value={routesEndOffset} onChange={handleRoutesEndDateChange} />
                             </Form.Group>
@@ -150,8 +166,9 @@ function AdForm() {
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="CampaignForm.CampaignMarkup">
-                        <Form.Label>Email Markup</Form.Label>
-                        <Form.Control as="textarea" rows="3" value={markup} onChange={handleMarkUpChange} />
+                        <Form.Label>Email preview</Form.Label>
+                        <Form.Control type="hidden" value={markup} onChange={handleMarkUpChange} />
+                        <div id="templatePreview" dangerouslySetInnerHTML={{ __html: markup }}></div>
                     </Form.Group>
                     <Button type="submit">Submit form</Button>
                 </Form>
