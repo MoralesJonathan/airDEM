@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export default {
-    // Gets all Campaigns
+    // Gets all Campaign names
     getCampaigns: function(iata) {
         return axios.get(`/api/campaigns/${iata}`);
     },
@@ -42,15 +42,15 @@ export default {
     updateCustomer: function(customerData) {
         return axios.post("/api/customer", customerData);
     },
-    // Updates a Customer in the database
+    // Gets the airline settings for a specific airline
     getAirlineSettings: function(airline) {
         return axios.get(`/api/airline/${airline}`);
     },
-    // Updates a Customer in the database
+    // Gets all airline names
     getAirlines: function() {
         return axios.get("/api/airlines");
     },
-    // Updates a Customer in the database
+    // Updates an airline setting in the database
     updateAirlineSettings: function(airlineSettings) {
         return axios.put("/api/airline", airlineSettings);
     },
@@ -58,6 +58,7 @@ export default {
     getStats: function(airline){
         return axios.get(`/api/tracking/${airline}`)
     },
+    // Gets the template for selected template
     getTemplate: function(template){
         return axios.get(`/api/template/${template}`);
     }

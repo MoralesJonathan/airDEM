@@ -96,7 +96,7 @@ function AirlineSettings() {
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group controlId="EmailForm.AirlineSelect">
                         <Form.Label>Select Airline</Form.Label>
-                        <Form.Control as="select" onChange={handleSelect}>
+                        <Form.Control as="select" onChange={handleSelect} value={name}>
                             {airlines.map((airline) =>
                                 <option key={airline}>{airline}</option>
                             )}
