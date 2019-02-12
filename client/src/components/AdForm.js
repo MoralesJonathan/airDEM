@@ -86,6 +86,7 @@ function AdForm() {
                 setDate(res.data.date);
                 setRoutesStartOffset(res.data.routesOffsetStartDate / 86400000);
                 setRoutesEndOffset(res.data.routesOffsetEndDate / 86400000);
+                setSubject(res.data.subject);
                 setMarkUp(res.data.markup);
                 setId(res.data._id);
             })
