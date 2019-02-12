@@ -20,7 +20,8 @@ function AdForm() {
     const [id, setId] = useState();
 
     useEffect(() => {
-        API.getCampaigns().then((res) => {
+        const iataCode = localStorage.getItem("iata");
+        API.getCampaigns(iataCode).then((res) => {
             if (res.data.length > 0) {
                 setCampaigns(campaigns.concat(res.data));
             }
@@ -80,7 +81,8 @@ function AdForm() {
 
     function handleSelect(event) {
         if (event.currentTarget.value !== "Create New Campaign") {
-            API.getCampaign(event.currentTarget.value).then(res => {
+            const iataCode = localStorage.getItem("iata");
+            API.getCampaign(event.currentTarget.value,iataCode).then(res => {
                 setSelected(res.data.name);
                 setName(res.data.name);
                 setDate(res.data.date);

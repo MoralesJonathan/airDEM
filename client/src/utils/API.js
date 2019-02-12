@@ -3,16 +3,16 @@ import axios from "axios";
 
 export default {
     // Gets all Campaigns
-    getCampaigns: function() {
-        return axios.get("/api/campaigns");
+    getCampaigns: function(iata) {
+        return axios.get(`/api/campaigns/${iata}`);
     },
     // Gets the Campgain with the given id
-    getCampaign: function(id) {
-        return axios.get(`/api/campaign/${  id}`);
+    getCampaign: function(id,iata) {
+        return axios.get(`/api/campaign/${iata}/${  id}`);
     },
     // Deletes the Campaign with the given id
-    deleteCampaign: function(id) {
-        return axios.delete(`/api/campaign/${  id}`);
+    deleteCampaign: function(id,iata) {
+        return axios.delete(`/api/campaign/${iata},${  id}`);
     },
     // Saves a Campaign to the database
     saveCampaign: function(campaignData) {
@@ -23,8 +23,8 @@ export default {
         return axios.post("/api/campaign", campaignData);
     },
     // Gets all Customer
-    getCustomers: function() {
-        return axios.get("/api/customers");
+    getCustomers: function(iata) {
+        return axios.get(`/api/customers/${iata}`);
     },
     // Gets the Customer with the given id
     getCustomer: function(id) {
@@ -43,7 +43,11 @@ export default {
         return axios.post("/api/customer", customerData);
     },
     // Updates a Customer in the database
-    getAirlineSettings: function() {
+    getAirlineSettings: function(airline) {
+        return axios.get(`/api/airline/${airline}`);
+    },
+    // Updates a Customer in the database
+    getAirlines: function() {
         return axios.get("/api/airlines");
     },
     // Updates a Customer in the database
@@ -51,8 +55,7 @@ export default {
         return axios.put("/api/airline", airlineSettings);
     },
     // Gets the tracking data per campaign
-    getStats: function(){
-        const airline = localStorage.getItem("iata");
+    getStats: function(airline){
         return axios.get(`/api/tracking/${airline}`)
     },
     getTemplate: function(template){

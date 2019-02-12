@@ -27,9 +27,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 !err ? cb(200, result) : cb(500, err);
             });
         },
-        getAllCustomers: cb => {
+        getAllCustomers: (iataCode, cb) => {
             const collection = mongodbConnection.db().collection("mailingList");
-            collection.find({}).toArray((err, result) => {
+            collection.find({"iata":iataCode}).toArray((err, result) => {
                 if (!err) {
                     result = result.map(a => a.name);
                     cb(200, result)

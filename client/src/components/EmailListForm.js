@@ -12,7 +12,8 @@ function EmailListForm() {
     const [id, setId] = useState();
 
     useEffect(() => {
-        API.getCustomers().then((res) => {
+        const iataCode = localStorage.getItem("iata");
+        API.getCustomers(iataCode).then((res) => {
             if (res.data.length > 0) {
                 setCustomers(customers.concat(res.data));
             }
@@ -25,10 +26,10 @@ function EmailListForm() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        let editedCustomer = {
+        const editedCustomer = {
             "firstName": firstName,
             "lastName": lastName,
-            "name": firstName+" "+lastName,
+            "name": `${firstName} ${lastName}`,
             "iata": localStorage.getItem("iata"),
             "email": email,
             "selected": selected
@@ -36,8 +37,7 @@ function EmailListForm() {
         if (id) {
             editedCustomer._id = id;
             API.updateCustomer(editedCustomer);
-        }
-        else {
+        } else {
             API.saveCustomer(editedCustomer);
         }
     }
@@ -62,8 +62,7 @@ function EmailListForm() {
                 setEmail(res.data.email);
                 setId(res.data._id);
             })
-        }
-        else {
+        } else {
             setSelected("Create New Customer");
             setFirstName("");
             setLastName("")
@@ -73,15 +72,15 @@ function EmailListForm() {
 
     return (
         <React.Fragment>
-            <Container style={{paddingTop: '20px'}}>
+            <Container style={{paddingTop: "20px"}}>
                 {error ? <Alert dismissible variant="danger">There was an error loading your Customers</Alert> : null}
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group controlId="CampaignForm.CustomerSelect">
                         <Form.Label>Select Customer</Form.Label>
                         <Form.Control as="select" onChange={handleSelect}>
-                            {customers.map((customer) => (
+                            {customers.map((customer) => 
                                 <option key={customer}>{customer}</option>
-                            ))}
+                            )}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="EmailForm.CustomerFirstName">

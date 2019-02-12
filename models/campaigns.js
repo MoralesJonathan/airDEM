@@ -33,15 +33,15 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 }
             });
         },
-        getCampaign: (name, cb) => {
+        getCampaign: (iataCode, name, cb) => {
             const collection = mongodbConnection.db().collection("campaigns");
-            collection.findOne({ name: name }, (err, result) => {
+            collection.findOne({$and:[{"iataCode": iataCode},{name: name }]}, (err, result) => {
                 !err ? cb(200, result) : cb(500, err);
             });
         },
-        getAllCampaigns: cb => {
+        getAllCampaigns: (iataCode, cb) => {
             const collection = mongodbConnection.db().collection("campaigns");
-            collection.find({}).toArray((err, result) => {
+            collection.find({"iataCode": iataCode}).toArray((err, result) => {
                 if (!err) {
                     result = result.map(a => a.name);
                     cb(200, result)
@@ -51,9 +51,9 @@ const mongodbConnection = require("../dbconfig/connection.js"),
                 }
             });
         },
-        deleteCampaign: (name, cb) => {
+        deleteCampaign: (iataCode, name, cb) => {
             const collection = mongodbConnection.db().collection("campaigns");
-            collection.deleteOne({ campaignName: name }, function (err, result) {
+            collection.deleteOne({$and:[{"iataCode": iataCode},{campaignName: name }]}, function (err, result) {
                 !err ? cb(200, result) : cb(500, err);
             });
         },

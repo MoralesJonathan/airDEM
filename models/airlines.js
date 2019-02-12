@@ -29,8 +29,8 @@ const mongodbConnection = require("../dbconfig/connection.js"),
             const collection = mongodbConnection.db().collection("airlines");
             collection.find({}).toArray((err, result) => {
                 if (!err) {
-                    let {0: airline} = result;
-                    cb(200, airline)
+                    let airlines = result.map(airline => airline.airlineName);
+                    cb(200, airlines)
                 }
                 else {
                     cb(500, err);
