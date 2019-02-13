@@ -37,23 +37,25 @@ mailerService = {
                 }
             });
         });
-        Promise.all([campaignPromise,airlinePromise,recipientsPromise]).then(results => {
-            const emailArray = [];
-            results[2].forEach(reciptient => {emailArray.push(reciptient.email)})
-            let mailOptions = {
-                from: `"${results[1].airlineName}" <${results[1].airlineEmail}>`,
-                to: emailArray,
-                subject: results[0].subject,
-                text: results[0].markup,
-                html: results[0].markup
-            };
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error sending mail');
-                    console.log(error.message);
-                }
-                console.log(`Message sent successfully! ${JSON.stringify(info)}`);
-            })
+        Promise.all([campaignPromise, airlinePromise, recipientsPromise]).then(results => {
+            results[2].forEach(reciptient => {
+                const loyaltyNumber = reciptient.loyalty ? `Loyalty Number: ${reciptient.loyalty}` : ""
+                const html = results[0].markup.replace(/{{{loyalty number}}}/gi, loyaltyNumber)
+                let mailOptions = {
+                    from: `"${results[1].airlineName}" <${results[1].airlineEmail}>`,
+                    to: reciptient.email,
+                    subject: results[0].subject,
+                    text: html,
+                    html: html
+                };
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log('Error sending mail');
+                        console.log(error.message);
+                    }
+                    console.log(`Message sent successfully! ${JSON.stringify(info)}`);
+                })
+            });
         }).catch(error => {
             console.log(`Could not send emails: ${error}`)
         });
