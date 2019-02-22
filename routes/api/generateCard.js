@@ -10,12 +10,19 @@ router.get("/:index/:airline/:lookahead1-:lookahead2/:campaignId", (req, res) =>
             'Content-Length': image.length
         });
         res.end(image);
-        tracking.logViewTracking({ "campaign": campaignId })
     }).catch(error => {
         res.send(500);
     })
-})
+});
 
+router.get("/view/:campaignId", (req, res) => {
+        res.writeHead(200, {
+            'Content-Type': 'image/jpg',
+            'Content-Length': 0
+        });
+        res.end();
+        tracking.logViewTracking({ "campaign": req.params.campaignId })
+});
 
 module.exports = router;
 
