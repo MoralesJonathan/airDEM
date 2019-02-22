@@ -14,7 +14,7 @@ imageCompositingService = {
                     });
             });
             let baseImagePromise = new Promise((resolve, reject) => {
-                Jimp.read('cardTemplate/350x450.png').then(baseImage => {
+                Jimp.read(`cardTemplate/${data.airline}_template.png`).then(baseImage => {
                     resolve(baseImage)
                 }).catch(ERR => {
                     reject(err)

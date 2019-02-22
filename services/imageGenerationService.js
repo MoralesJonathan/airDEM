@@ -20,7 +20,8 @@ imageGenerationService = {
                 departureDate: fare.fares[0].departureDate,
                 fareClass: fare.fares[0].farenetTravelClass,
                 searchDate: fare.fares[0].searchDate,
-                price: fare.fares[0].usdTotalPrice
+                price: fare.fares[0].usdTotalPrice,
+                airline: airline
             }
             return imageCompositionService.compositeImage(insertData).then(image => {
                 return image
