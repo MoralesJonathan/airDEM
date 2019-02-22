@@ -16,11 +16,12 @@ router.get("/:index/:airline/:lookahead1-:lookahead2/:campaignId", (req, res) =>
 });
 
 router.get("/view/:campaignId", (req, res) => {
+        const img = new Buffer("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", 'base64');
         res.writeHead(200, {
-            'Content-Type': 'image/jpg',
-            'Content-Length': 0
+            'Content-Type': 'image/png',
+            'Content-Length': img.length
         });
-        res.end();
+        res.end(img);
         tracking.logViewTracking({ "campaign": req.params.campaignId })
 });
 
