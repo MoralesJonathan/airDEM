@@ -58,8 +58,8 @@ imageCompositingService = {
                         .getBuffer(Jimp.MIME_JPEG, (e, imageBuffer) => {
                             resolve(imageBuffer);
                         });
-                });
-            })
+                }).catch(error => reject(error));
+            }).catch(error => reject(error));
         });
     }
 

@@ -104,7 +104,7 @@ function AdForm() {
         if (event.currentTarget.value !== "None") {
             API.getTemplate(event.currentTarget.value).then(res => {
                 setTemplate(res.data.content);
-                const markup = res.data.content.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+                const markup = res.data.content.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
                 setMarkUp(markup);
             });
         } else {
@@ -115,7 +115,7 @@ function AdForm() {
     }
 
     function updateMarkup() {
-        const markup = template.replace(/{{{campaignName}}}}/gi, name).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+        const markup = template.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
         setMarkUp(markup);
     }
 

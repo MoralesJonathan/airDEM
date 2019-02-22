@@ -24,7 +24,15 @@ imageGenerationService = {
             }
             return imageCompositionService.compositeImage(insertData).then(image => {
                 return image
+            }).catch(error => {
+                console.log("Could not generate image");
+                console.log(error);
+                return false;
             })
+        }).catch(err => {
+            console.log("Could not fetch fares");
+            console.log(err);
+            return false;
         });
     }
 }

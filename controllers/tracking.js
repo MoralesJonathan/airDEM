@@ -8,7 +8,8 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         logClickTracking: data => {
             const collection = mongodbConnection.db().collection("tracking");
             const today = new Date().toLocaleDateString();
-            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "events.$.clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
+            const campaign = decodeURIComponent(data.campaign);
+            collection.updateOne({"campaign":campaign, "events.date":today}, {$inc : { "events.$.clicks" : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
                     console.log("Click logged!")
                 } else {
@@ -19,7 +20,8 @@ const mongodbConnection = require("../dbconfig/connection.js"),
         logViewTracking: data => {
             const collection = mongodbConnection.db().collection("tracking");
             const today = new Date().toLocaleDateString();
-            collection.updateOne({"campaign":data.campaign, "events.date":today}, {$inc : { "events.$.views" : 1} } , {upsert: false, multi: false},  function (err, result) {
+            const campaign = decodeURIComponent(data.campaign);
+            collection.updateOne({"campaign":campaign, "events.date":today}, {$inc : { "events.$.views" : 1} } , {upsert: false, multi: false},  function (err, result) {
                 if (!err) {
                     console.log("View logged!")
                 } else {
