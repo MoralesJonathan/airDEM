@@ -15,12 +15,12 @@ function AdForm() {
     const [routesEndOffset, setRoutesEndOffset] = useState(7)
     const [routesStartOffset, setRoutesStartOffset] = useState(1)
     const [template, setTemplate] = useState("");
+    const [iataCode, setIataCode] = useState(localStorage.getItem("iata"));
     const [markup, setMarkUp] = useState("");
     const [subject, setSubject] = useState("");
     const [id, setId] = useState();
 
     useEffect(() => {
-        const iataCode = localStorage.getItem("iata");
         API.getCampaigns(iataCode).then((res) => {
             if (res.data.length > 0) {
                 setCampaigns(campaigns.concat(res.data));
@@ -30,6 +30,7 @@ function AdForm() {
                 console.log(error, campaigns);
                 setError(true);
             })
+           
     }, []);
 
     function handleSubmit(event) {
@@ -41,7 +42,7 @@ function AdForm() {
             "routesOffsetEndDate": routesEndOffset * 86400000,
             "markup": markup,
             "selected": selected,
-            "iataCode": localStorage.getItem("iata"),
+            "iataCode": iataCode,
             "subject": subject
         }
         if (id) {
@@ -81,7 +82,6 @@ function AdForm() {
 
     function handleSelect(event) {
         if (event.currentTarget.value !== "Create New Campaign") {
-            const iataCode = localStorage.getItem("iata");
             API.getCampaign(event.currentTarget.value, iataCode).then(res => {
                 setSelected(res.data.name);
                 setName(res.data.name);
@@ -104,7 +104,7 @@ function AdForm() {
         if (event.currentTarget.value !== "None") {
             API.getTemplate(event.currentTarget.value).then(res => {
                 setTemplate(res.data.content);
-                const markup = res.data.content.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+                const markup = res.data.content.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{airlineCode}}}/gi, iataCode).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
                 setMarkUp(markup);
             });
         } else {
@@ -115,7 +115,7 @@ function AdForm() {
     }
 
     function updateMarkup() {
-        const markup = template.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
+        const markup = template.replace(/{{{campaignName}}}}/gi, encodeURI(name)).replace(/{{{airlineCode}}}/gi, iataCode).replace(/{{{routeStartDateOffset}}}}-{{{routeEndDateOffset}}}}/gi, `${routesStartOffset * 86400000}-${(routesStartOffset + routesEndOffset) * 86400000}`)
         setMarkUp(markup);
     }
 
