@@ -82,7 +82,7 @@ function AdForm() {
     function handleSelect(event) {
         if (event.currentTarget.value !== "Create New Campaign") {
             const iataCode = localStorage.getItem("iata");
-            API.getCampaign(event.currentTarget.value,iataCode).then(res => {
+            API.getCampaign(event.currentTarget.value, iataCode).then(res => {
                 setSelected(res.data.name);
                 setName(res.data.name);
                 setDate(res.data.date);
@@ -173,7 +173,7 @@ function AdForm() {
                         <Form.Control type="hidden" value={markup} onChange={handleMarkUpChange} />
                         <div id="templatePreview" dangerouslySetInnerHTML={{ __html: markup }}></div>
                     </Form.Group>
-                    <Button type="submit">Submit form</Button>
+                    {template !== "" ? <Button type="submit" variant="primary" >Submit form</Button> : <Button type="submit" variant="secondary" disabled >Submit form</Button>}
                 </Form>
             </Container>
         </React.Fragment>
