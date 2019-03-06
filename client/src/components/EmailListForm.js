@@ -54,7 +54,7 @@ function EmailListForm() {
     }
 
     function handleSelect(event) {
-        if (event.currentTarget.value !== "Create New Campaign") {
+        if (event.currentTarget.value !== "Create New Customer") {
             API.getCustomer(event.currentTarget.value).then((res) => {
                 setSelected(res.data.name);
                 setFirstName(res.data.firstName);
