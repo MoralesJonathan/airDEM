@@ -5,7 +5,7 @@ imageGenerationService = {
     getFlightInfo: (index, airline, routesDateSecondsOffset, campaignId) => {
         return axios.post(`${process.env.FARES_API}${airline}/fares/grouped-routes`, { "flightType": "ROUND_TRIP", "priceFormat": { "decimalSeparator": ".", "thousandSeparator": ",", "decimalPlaces": 0 }, "datePattern": "MM/dd/yyyy", "languageCode": "en", "outputCurrencies": [ "USD" ], "faresPerRoute": 1, "routesLimit": 10, "dataExpirationWindow": "2d", "outputFields": [ "returnDate", "usdTotalPrice", "popularity", "originCity", "destinationCity", "destinationAirportImage", "destinationCityImage", "destinationStateImage", "destinationCountryImage", "farenetTravelClass", "travelClass" ], "sorting": [ { "popularity": "DESC" }, { "usdTotalPrice": "ASC" } ], "departure": { "start": new Date(new Date().getTime() + parseInt(routesDateSecondsOffset[0])).toISOString().slice(0, 10), "end": new Date(new Date().getTime() + parseInt(routesDateSecondsOffset[1])).toISOString().slice(0, 10) }, "origins": [], "destinations": [] }, {
             headers: {
-                "Authorization": `${process.env.FARES_TOKEN}`
+                "EM-API-Key": `${process.env.FARES_TOKEN}`
             },
             dataType: "json",
             contentType: "application/json;charset=UTF-8"
